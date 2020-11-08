@@ -93,4 +93,4 @@ if "Herzlichen Dank für Deine Teilnahme!" in res.text:
 if success:
     print("Voting successful!")
 else:
-    print("Error. Please check skript.")
+    print("Error. Please check script.")
