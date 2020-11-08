@@ -49,10 +49,10 @@ street = person_data[0]["location"]["street"]["name"] + ' ' + str(person_data[0]
 zip_code = person_data[0]["location"]["zip"]
 city = person_data[0]["location"]["city"]
 
-# get country associated to zip code
+# get state associated to zip code
 res = requests.get("http://api.geonames.org/postalCodeSearchJSON?postalcode=" + zip_code + "&placename=" + city + "&county=DE&maxRows=10&username=nabubot")
 city_data = res.json()
-country = city_data["postalCodes"][0]["adminName1"]
+state = city_data["postalCodes"][0]["adminName1"]
 
 # perform post request to vote
 headers = {'User-Agent': 'Mozilla/5.0'}
@@ -65,7 +65,7 @@ payload = {
     'form[strasse]': street,
     'form[plz]': zip_code,
     'form[ort]': city,
-    'form[bundesland]': country,
+    'form[bundesland]': state,
     'form[email]': email,
     'form[mitglied]': 'nein',
     'form[begruendung]': '',
