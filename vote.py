@@ -39,20 +39,26 @@ for line in res.iter_lines():
         mailbox = str_line[start:end]
         break
 
-# generate random contact data
-res = requests.get("https://randomname.de/?format=json")
-person_data = res.json()
+person_data_complete = False
+while not person_data_complete:
+    # generate random contact data
+    res = requests.get("https://randomname.de/?format=json")
+    person_data = res.json()
 
-firstname = person_data[0]["firstname"]
-lastname = person_data[0]["lastname"]
-street = person_data[0]["location"]["street"]["name"] + ' ' + str(person_data[0]["location"]["street"]["number"])
-zip_code = person_data[0]["location"]["zip"]
-city = person_data[0]["location"]["city"]
+    firstname = person_data[0]["firstname"]
+    lastname = person_data[0]["lastname"]
+    street = person_data[0]["location"]["street"]["name"] + ' ' + str(person_data[0]["location"]["street"]["number"])
+    zip_code = person_data[0]["location"]["zip"]
+    city = person_data[0]["location"]["city"]
 
-# get country associated to zip code
-res = requests.get("http://api.geonames.org/postalCodeSearchJSON?postalcode=" + zip_code + "&placename=" + city + "&county=DE&maxRows=10&username=nabubot")
-city_data = res.json()
-country = city_data["postalCodes"][0]["adminName1"]
+    # get state associated to zip code
+    res = requests.get(
+        "http://api.geonames.org/postalCodeSearchJSON?postalcode=" + zip_code + "&placename=" + city + "&county=DE&maxRows=10&username=nabubot")
+    city_data = res.json()
+
+    if len(city_data["postalCodes"]) > 0:
+        state = city_data["postalCodes"][0]["adminName1"]
+        person_data_complete = True
 
 # perform post request to vote
 headers = {'User-Agent': 'Mozilla/5.0'}
@@ -65,7 +71,7 @@ payload = {
     'form[strasse]': street,
     'form[plz]': zip_code,
     'form[ort]': city,
-    'form[bundesland]': country,
+    'form[bundesland]': state,
     'form[email]': email,
     'form[mitglied]': 'nein',
     'form[begruendung]': '',
