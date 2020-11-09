@@ -92,11 +92,7 @@ for line in res.iter_lines():
 
 res = requests.get(confirm_link)
 
-success = False
 if b'Herzlichen Dank f\xc3\xbcr Deine Teilnahme!' in res.content:
-    success = True
-
-if success:
     print("Voting successful!")
 else:
     print("Error. Please check script.")
