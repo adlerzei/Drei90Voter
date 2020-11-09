@@ -60,6 +60,21 @@ while not person_data_complete:
         state = city_data["postalCodes"][0]["adminName1"]
         person_data_complete = True
 
+# generate random contact data
+res = requests.get("https://randomname.de/?format=json")
+person_data = res.json()
+
+firstname = person_data[0]["firstname"]
+lastname = person_data[0]["lastname"]
+street = person_data[0]["location"]["street"]["name"] + ' ' + str(person_data[0]["location"]["street"]["number"])
+zip_code = person_data[0]["location"]["zip"]
+city = person_data[0]["location"]["city"]
+
+# get state associated to zip code
+res = requests.get("http://api.geonames.org/postalCodeSearchJSON?postalcode=" + zip_code + "&placename=" + city + "&county=DE&maxRows=10&username=nabubot")
+city_data = res.json()
+state = city_data["postalCodes"][0]["adminName1"]
+
 # perform post request to vote
 headers = {'User-Agent': 'Mozilla/5.0'}
 payload = {
